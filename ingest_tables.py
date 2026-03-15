@@ -1,9 +1,4 @@
-#import pdfplumber
-# import re
-# from config import CHUNK_SIZE, OVERLAP
-# import os
 from db import create_collection, add_documents
-# from config import DOCUMENTS_DIR
 from docx import Document
 
 # Импортировать данные из докс таблицы с проходнными баллами (предварительно надо отредактировать и положить информацию о форме обучения во второй столбец заголовка: очное, заочное, очно-заочное)
@@ -43,6 +38,7 @@ def list_to_string(rows):
         chunks_text.append(text)
     return chunks_text
 
+# Путь к документу
 doc = Document("E://RAG_Documents//bakalavr_2025.docx")
 
 points_list = extract_lines_from_doxc(doc)

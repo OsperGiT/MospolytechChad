@@ -3,6 +3,8 @@ from embeddings import get_embedding
 from config import system_input
 import ollama
 
+#включить/выключить отладку (True/False)
+otladka = False
 
 collection = create_collection("docs")
 
@@ -51,7 +53,9 @@ def retrieve(query, n_results=15):
         where={"topics": topics}   # фильтр по метаданным
     )
 
-    print(f"\nПоиск в топике: {topics}\n")
+    # отладка
+    if otladka:
+        print(f"\nПоиск в топике: {topics}\n")
 
     return results["documents"][0], results["distances"][0]
 
@@ -63,8 +67,12 @@ while True:
 
     context_chunks, distance = retrieve(user_input)
     context_text = "\n".join(context_chunks)
-    for z in range(len(context_chunks)):
-        print(context_chunks[z], "  Дистаниция: ",distance[z], "\n")
+
+    # отладка
+    if otladka:
+        for z in range(len(context_chunks)):
+            print(context_chunks[z], "  Дистаниция: ",distance[z], "\n")
+
     response = ollama.chat(
         
         model="gemma3:12b",
