@@ -1,6 +1,10 @@
 from sentence_transformers import SentenceTransformer
-
 from config import MODEL_NAME
+from dotenv import load_dotenv
+import os
+load_dotenv()
+
+os.environ["HF_TOKEN"]=os.getenv("HF_TOKEN")
 
 print("Загружаем модель эмбеддингов...")
 model = SentenceTransformer(MODEL_NAME)

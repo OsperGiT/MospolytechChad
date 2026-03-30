@@ -18,39 +18,63 @@ def create_collection(name="documents"):
     return client.create_collection(name)
 
 # Функия добавления таблиц вроде проходных баллов
-def add_documents(collection, chunks_text, topics=None, subtopics_list=None):
-    """
-    collection       - Chroma коллекция
-    chunks_text      - список чанков текста
-    topics           - список темы для каждого чанка (или один элемент для всех)
-    subtopics_list   - список списков под-тем для каждого чанка
-    """
-    embeddings = get_embedding(chunks_text)
+def add_documents_structured(collection, chunks, topics=None):
+    documents_text = []
+    metadatas = []
 
-    for i, text in enumerate(chunks_text):
-        metadata = {}
+    for i, chunk in enumerate(chunks):
+        direction = chunk.get("direction", "")
+        form = chunk.get("form", "")
+        profile = chunk.get("profile") or ""
+        major_id = chunk.get("major_id") or ""
+        secondary_id = chunk.get("secondary_id") or ""
 
-        # добавляем topic
+        # Преобразуем баллы в числа, если возможно
+        def parse_number(val):
+            if val is None:
+                return 0
+            val = str(val).replace(",", ".").strip()
+            try:
+                return float(val)
+            except:
+                return 0
+
+        passing_budget = parse_number(chunk.get("passing_budget"))
+        passing_paid = parse_number(chunk.get("passing_paid"))
+
+        # Текст для embedding
+        text = f"{direction} ({form})"
+        if profile != direction:
+            text += f": {profile}"
+        documents_text.append(text)
+
+        # Метаданные — только плоские типы
+        metadata = {
+            "direction": direction,
+            "form": form,
+            "major_id": major_id,
+            "profile": profile,
+            "passing_budget": passing_budget,
+            "passing_paid": passing_paid,
+            "secondary_id": secondary_id,
+            "subtopics": ["проходные баллы", form],
+        }
+
         if topics:
-            if isinstance(topics, list):
-                metadata["topics"] = topics[i]  # если передан список тем по чанкам
-            else:
-                metadata["topics"] = topics      # если одна тема для всех
+            metadata["topics"] = topics if not isinstance(topics, list) else topics[i]
 
-        # добавляем subtopics
-        if "очно-заочная" in text:
-            metadata["subtopics"] = ["очно-заочная", "проходные баллы"]
-        elif "заочная" in text:
-            metadata["subtopics"] = ["заочная", "проходные баллы"]
-        elif "очная" in text:
-            metadata["subtopics"] = ["очная", "проходные баллы"]
+        metadatas.append(metadata)
 
-        collection.add(
-            documents=[text],
-            embeddings=[embeddings[i]],
-            ids=[str(uuid.uuid4())],
-            metadatas=[metadata]
-        )
+    # Генерация embeddings
+    embeddings = get_embedding(documents_text)
+
+    # Добавляем в ChromaDB
+    collection.add(
+        documents=documents_text,
+        embeddings=embeddings,
+        ids=[str(uuid.uuid4()) for _ in chunks],
+        metadatas=metadatas
+    )
 
 # функция добавления чанков из docx
 # def add_documents(collection, chunks_text, topics=None, subtopics_list=None):
