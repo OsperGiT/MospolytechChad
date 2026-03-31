@@ -77,17 +77,17 @@ def add_documents_structured(collection, chunks, topics=None):
     )
 
 # функция добавления чанков из docx
-# def add_documents(collection, chunks_text, topics=None, subtopics_list=None):
+def add_documents(collection, chunks_text, topics=None, subtopics_list=None):
 
-#     embeddings = get_embedding(chunks_text)
-#     metadata = {}
-#     metadata["topics"] = topics
+    embeddings = get_embedding(chunks_text)
+    metadata = {}
+    metadata["topics"] = topics
 
-#     for i, text in enumerate(chunks_text):
-#         collection.add(
-#             documents=[text],
-#             embeddings=[embeddings[i]],
-#             ids=[str(uuid.uuid4())],
-#             metadatas=[metadata]
-#         )
-#     print("Документы успешно добавлены")
+    for i, text in enumerate(chunks_text):
+        collection.add(
+            documents=[text],
+            embeddings=[embeddings[i]],
+            ids=[str(uuid.uuid4())],
+            metadatas=[metadata]
+        )
+    print("Документы успешно добавлены")

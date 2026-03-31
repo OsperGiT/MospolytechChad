@@ -47,8 +47,8 @@ def prepare_chunks_from_docx(file_path: str, topics: str, subtopics: List[str],
 # =========================
 # Пример использования
 # =========================
-file_path = "E://RAG_Documents//clear//РАСПИСАНИЕ.docx"  # путь к твоему docx файлу
-topics = "расписание"
+file_path = "E://RAG_Documents//clear//МФЦ.docx"  # путь к твоему docx файлу
+topics = "мфц"
 # subtopics = ["обучение", "практика", "научные исследования", "FAQ"]
 
 chunks, metadatas = prepare_chunks_from_docx(file_path, topics, subtopics = None)

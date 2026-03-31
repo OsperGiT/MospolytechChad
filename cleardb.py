@@ -17,6 +17,6 @@ client = chromadb.Client(
 #почистить данные
 collection = create_collection("docs")
 collection.delete(
-    where={"topics":"бакалавриат"}
+    where={"topics":"мфц"}
 )
 print("Данные из коллекции удалены")
