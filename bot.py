@@ -4,24 +4,24 @@ from aiogram import Bot, Dispatcher, F
 from aiogram.filters import Command
 from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton
 import os
-from utils.pipeline import init_rag_services  # Твой новый пайплайн
+from utils.pipeline import init_rag_services 
 
-# --- ИНИЦИАЛИЗАЦИЯ ---
+# Инициализация
 rag_sys = init_rag_services()
-bot = Bot(token=os.getenv("TELEGRAM_TOKEN")) # Можно брать токен из конфига rag_sys
+bot = Bot(token=os.getenv("TELEGRAM_TOKEN"))
 dp = Dispatcher()
 
-# История теперь может храниться внутри сервиса или здесь
+# История сообщений пользователя
 user_history = {}
 
-# --- КЛАВИАТУРЫ ---
+# Кнопки взаимодействия
 def get_main_keyboard():
     return InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(text="🔄 Сбросить диалог", callback_data="reset_dialog")],
         [InlineKeyboardButton(text="📞 Оператор", callback_data="operator")]
     ])
 
-# --- ХЕНДЛЕРЫ ---
+# Хендлеры
 @dp.message(Command("start"))
 async def cmd_start(message: Message):
     user_id = message.from_user.id
