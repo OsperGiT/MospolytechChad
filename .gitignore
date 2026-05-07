@@ -1,6 +1,5 @@
 # Виртуальное окружение
 venv/
-utils/db_master.py
 
 # Кэш Python
 __pycache__/
